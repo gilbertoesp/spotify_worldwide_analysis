@@ -104,3 +104,4 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+notas_sueltas.md
