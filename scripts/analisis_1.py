@@ -34,6 +34,36 @@ def get_df(df, column, value, labels):
 
 #%% PLAYGROUND
 if __name__ == "__main__":
+#==============================================================================
+# SECCION CHEVERE
+#==============================================================================    
+    #%% Leyendo de pickle
+    # diccionario con pos por region
+    """ JUPYTER """
+    # import pickle
+    path = "data/"
+    
+    # diccionario con pos por region
+    file_name = "region_range.dict"
+    
+    file_object = open(path+file_name,'rb')
+    objeto = pickle.load(file_object)       #PICKLE
+    region_range = objeto
+    
+    #%% Guardando datos en pickle
+    """ JUPYTER """
+    path = "data/"
+    
+    # diccionario con pos por region
+    file_name = "region_range.dict"
+    
+    file_object = open(path+file_name, 'wb')
+    pickle.dump(region_range, file_object)  #PICKLE
+    file_object.close()
+    
+#==============================================================================
+#     
+#==============================================================================
     #%% Cargando datos
     daily_song_df = load("data.csv")
     #print(daily_song_df.head(10))
@@ -59,16 +89,6 @@ if __name__ == "__main__":
     # Sorteando posiciones
     posiciones = daily_song_df['Position']
     
-    #lista_test = [i for i in range(1,201)] # [1,200]
-    
-    dias_completos = 0
-    for j in range(0, len(posiciones)):
-        if posiciones[j] == 200:
-            dias_completos +=1
-    # sum = 14402, la cantidad de que el 200 se encuentra en la lista, entonces
-    # solo tenemos esta cantidad de dias completos,
-    sum * 200 # = 2880400, canciones que estan en los dias completos
-    
     
     
     
@@ -83,67 +103,75 @@ if __name__ == "__main__":
     
     # conjunto de todas las regiones con las que cuenta el df
     # print(regiones)
-    regiones = ['id', 'ca', 'sg', 'pt', 'au', 'hn', 'dk', 'pl', 'it', 'hk', 'ie', 'lt', 'gt', 'se', 'lu', 'fr', 'ar', 'ec', 'uy', 'tw', 'gr', 'do', 'fi', 'co', 'global', 'lv', 'cz', 'at', 'bo', 'gb', 'jp', 'be', 'es', 'ee', 'no', 'nz', 'tr', 'br', 'is', 'pe', 'cr', 'mx', 'ch', 'pa', 'nl', 'hu', 'ph', 'sk', 'sv', 'cl', 'us', 'my', 'de', 'py']
+
+#==============================================================================
+#     """
+#      Contamos con 54 regiones, pues incluimos 'global', las canciones top del mundo.
+#     """
+#     global_list = list()
+#     
+#     for i in range(0,len(posiciones)):
+#         if daily_song_df["Region"][i] == 'global':
+#             global_list.append(i)
+#     
+#     len(global_list) # = 73800
+#     
+#     global_start, global_finish = min(global_list), max(global_list)
+#     
+#     global_df = daily_song_df[['Position', 'Track Name', 'Artist', 'Streams', 'Date', 'Region']][global_start:global_finish]
+#     """
+#     Conseguimos un dataframe con todos datos disponibles para la region 'global'
+#     """
+#==============================================================================
+    #%%
+    """ JUPYTER
+        Conseguimos las posiciones del df que corresponden a las diferentes regiones
+        Esta informacion se guardo en "data/region_range.dict" 
     """
-     Contamos con 54 regiones, pues incluimos 'global', las canciones top del mundo.
-    """
-    global_list = list()
+    # todas las regiones
+    region_codigo = ['id', 'ca', 'sg', 'pt', 'au', 'hn', 'dk', 'pl', 'it', 'hk', 'ie', 
+                'lt', 'gt', 'se', 'lu', 'fr', 'ar', 'ec', 'uy', 'tw', 'gr', 'do',
+                'fi', 'co', 'global', 'lv', 'cz', 'at', 'bo', 'gb', 'jp', 'be', 
+                'es', 'ee', 'no', 'nz', 'tr', 'br', 'is', 'pe', 'cr', 'mx', 'ch', 
+                'pa', 'nl', 'hu', 'ph', 'sk', 'sv', 'cl', 'us', 'my', 'de', 'py']
+    region_nombre = ['Indonesia', 'Canada', 'Singapore', 'Portugal', 'Australia', 'Honduras', 'Denmark', 'Poland', 'Italy', 'Hong Kong','Irelad',
+                     'Lithuania', 'Guatemala','Senegal','Luxemburg','France','Argentina','Ecuador','Uruguay','Taiwan','Greece','Dominic Republic',
+                     'Finland','Colombia','Global','Latvia','Czech Republic','Austria','Bolivia','United Kingdom','Japon','Belgium',
+                     'Spain','Estonia','Norway','New Zeland','Turkey','Brazil','Iceland','Peru','Costa Rica','Mexico','Switzerland',
+                     'Panama', 'Netherlands', 'Hungary','Philippines', 'Slovakia', 'El Salvador', 'Chile', 'United States','Malaysia','Germany','Paraguay']
     
-    for i in range(0,len(posiciones)):
-        if daily_song_df["Region"][i] == 'global':
-            global_list.append(i)
-    
-    len(global_list) # = 73800
-    
-    global_start, global_finish = min(global_list), max(global_list)
-    
-    global_df = daily_song_df[['Position', 'Track Name', 'Artist', 'Streams', 'Date', 'Region']][global_start:global_finish]
-    """
-    Conseguimos un dataframe con todos datos disponibles para la region 'global'
-    """
+    regiones = {region_codigo[i]:region_nombre[i] for i in range(0,len(region_codigo))}
     # rangos para todas las regiones
     region_range = dict() #un dict cuyas keys seran las regiones
 
-    for region in regiones:
+    for region in regiones.keys():
         region_range[region] = list()
         
-    for i in range(0, len(posiciones)):
+    for i in range(0, len(daily_song_df)): # region_range.dict - Guardado File
         region_range[ daily_song_df["Region"][i] ].append(i)
 
-#==============================================================================
-#     #buscaremos en el dataframe todos lo datos que existan
-#     for pos in range(0, len(daily_song_df)):
-#         for region in regiones:
-#             if daily_song_df["Region"][pos] == region:
-#                 region_range[region].append(pos)
-#                 break # si encuentra la region a la que pertenece terminamos
-#         
-# 
-#==============================================================================
-    # ==============================================================================
-    # {'id', 'ca', 'sg', 'pt', 'au', 'hn', 'dk', 'pl', 'it', 'hk', 'ie', 'lt', 
-    # 'gt', 'se', 'lu', 'fr', 'ar', 'ec', 'uy', 'tw', 'gr', 'do', 'fi', 'co', 
-    # 'global', 'lv', 'cz', 'at', 'bo', 'gb', 'jp', 'be', 'es', 'ee', 'no', 'nz',
-    # 'tr', 'br', 'is', 'pe', 'cr', 'mx', 'ch', 'pa', 'nl', 'hu', 'ph', 'sk', 'sv', 
-    # 'cl', 'us', 'my', 'de', 'py'}
+    # conseguimos cuantos registros hay en total para cada region
+    region_total = dict()
+    for region in region_range:
+        region_total[region] = len(region_range[region])
+        
+    # guardamos estas cantidades en una lista para ver sus propiedades
+    cantidad_registros = [region_total[region] for region in regiones.keys()]
+    
+    # Verificamos los registros
+    sum(cantidad_registros)# == len(daily_song_df)
+    max(cantidad_registros)
+    min(cantidad_registros)
+    """
+       Notamos que el maximo es 74200, lo cual que si todos los dias estan completos con sus 200 registros
+       contamos con 371 dias para estos casos. Mientras que en la peor region tenemos 4098 registros, de igual
+       manera si estan las 200 canciones tendremos 20.49 dias de registros
+    """
+    # que regiones tienen maxima cantidad de registros
+    regiones_comp = [region for region in regiones.keys() if region_total[region] == max(cantidad_registros)]
+    # regiones que tienen menos datos, las que restan
+    regiones_no_comp = [region for region in regiones.keys() if region not in regiones_comp]
     
     
-    #%% Guardando datos en pickle
-    path = "data/"
-    # diccionario con pos por region
-    file_name = "region_range.dict"
-    file_object = open(path+file_name, 'wb')
-    
-    pickle.dump(region_range, file_object)
-    print("dumping")
-    file_object.close()
-    
-    
-    #%% Leyendo de pickle
-    # diccionario con pos por region
-
-    file_object = open(path+file_name,'rb')
-    objeto = pickle.load(file_object)
-    objeto == region_range
     #%%
     
