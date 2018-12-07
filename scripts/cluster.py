@@ -18,8 +18,6 @@ df = pd.read_csv("data/data.csv")
 #print(mx_data.loc[mx_data['Date'] == '2017-01-01'][0:10]) # Conseguiendo datos por dia top 10
 """ Formato de fechas 20XX-12-31 """
 
-""" TODO : top 10 de cada dia """
-
 #%% REGION DATAFRAME
 def get_region(df, region):
     """
@@ -48,14 +46,52 @@ def get_top_by_day(num, date, df):
     """
     return df.loc[df['Date'] == date].head(num)
 #%% donde
-def get_top(num, df):
-    dates = get_dates(df)
+def get_top(num, df, region=None, dates=None):
+    """
+        Regresa un dataframe que contiene el top num (e.g. top 10, top 50)
+        de la region solicitada, y en un conjunto de fechas dada.
+        region = {'mx','global', ...}
+        date = ['20XX-12-31','20XX-12-31', ...]
+    """
+    if region is not None:
+        df = get_region(df, region)
+    if dates is None:
+        dates = get_dates(df)
+    
     data = pd.DataFrame()
     for date in dates:
         data = data.append(get_top_by_day(num, date, df))
         
     return data
  #%%   
+#==============TARDA UN CHINGO ================================================================
+# def get_top(num, df, region = None, dates = None):
+#     
+#     if region is not None:
+#          data = df.loc[df['Region'] == region]
+#     
+#     if dates is None:
+#         def get_dates(dataframe):
+#             """
+#                 Regresa una lista de todas las fechas del df recibido.
+#                 Las fechs estan en string foramto 2017-12-31
+#                 No todos las regines tienen dias completos
+#             """
+#             dates = []
+#             for date in dataframe['Date']:
+#                 if date not in dates:
+#                     dates.append(date)
+#             return dates
+#         
+#         dates = get_dates(df) # conseguimos la lista de fechas que maneja el df
+#             
+#     data = pd.DataFrame()
+#     for date in dates:
+#         data = data.append(get_top_by_day(num, date, df))
+#         
+#     return data
+#==============================================================================
+#%%
 #=====================intento dos=========================================================
 #     if dates is None:
 #         dates = get_dates(df)
@@ -80,11 +116,45 @@ def get_top(num, df):
 #     return top
 #==============================================================================
 
-#%% MAIN
-mx_data = get_region(df, 'mx')
-mx_dates = get_dates(mx_data)
 
-mx_top10 = get_top(10, mx_data)
+#%%
+def artists_frec(df):
+    """ diccionario de frecuencias de los artistas dado un dataframe
+        Este diccionario cuenta cuantos registros son de cierto de artista dentro del df
+    """
+
+    list_artists = df['Artist']#.tolist() # sera una lista de strings
+    artist_frec = {}
+    for artist in list_artists:
+        if artist not in artist_frec:
+            artist_frec[artist] = 1
+        else:
+            artist_frec[artist] += 1
+    return artist_frec
+        
+artist_mx = artists_frec(top10_mex)
+
+#%%
+    """TODO : lista de canciones dado un dataframe"""
+#%%
+    """ TODO : lista con los streams """
+#%% MAIN
+#mx_data = get_region(df, 'mx')
+#mx_dates = get_dates(mx_data)
+""" Conseguimos el dataframe del top 10, en vez del top 200 """
+top10_mex = get_top(10, df, region='mx')
+
+"""
+que hacer con una unica region, que podemos aprender de ella
+
+Un vector de dias, que sea la distancia de cancion/artista con la que difiere
+(como ver el cambio que tiene la region a lo largo del aÑo)
+"""
+
+"""
+Identidad de una region
+"""
+
 
 
 
